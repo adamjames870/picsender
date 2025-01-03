@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:PicSender.Models"
+             xmlns:viewModels="clr-namespace:PicSender.ViewModels"
+             x:Class="PicSender.Views.MainPage"
+             x:DataType="viewModels:MainPageViewModel">
+
+<Grid ColumnDefinitions="*,*"
+          ColumnSpacing="5"
+          RowDefinitions="*,Auto">
+    
+        <CollectionView 
+            Grid.ColumnSpan="2" 
+            ItemsSource="{Binding Monkeys}"
+            SelectionMode="None">
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:PicToSend">
+                    <Grid Padding="10"> 
+                        <Border HeightRequest="125" 
+                                Padding="0"
+                                Style="{StaticResource CardView}">
+                            <Label Text="{Binding Name}" />
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+        
+        <Button Grid.Row="1"
+                Grid.Column="0"
+                Margin="5"
+                Style="{StaticResource ButtonOutline}"
+                Text="Choose Picture"
+                Command="{Binding AddPictureCommand}" />
+        
+        <Button Grid.Row="1"
+                Grid.Column="1"
+                Margin="5"
+                Style="{StaticResource ButtonOutline}"
+                Text="Take Photo"
+                Command="{Binding TakePhotoCommand}"/>
+        
+    </Grid>
+
+</ContentPage>
