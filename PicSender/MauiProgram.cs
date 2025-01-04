@@ -20,7 +20,10 @@ public static class MauiProgram
         builder.Services.AddSingleton(MediaPicker.Default);
         
         builder.Services.AddSingleton<MainPageViewModel>();
+        builder.Services.AddTransient<PictureGroupDetailViewModel>();
+        
         builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddTransient<PictureGroupDetailView>();
 
 #if DEBUG
         builder.Logging.AddDebug();

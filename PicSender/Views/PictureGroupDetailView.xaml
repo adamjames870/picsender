@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PicSender.Views.PictureGroupDetailView"
+             xmlns:models="clr-namespace:PicSender.Models"
+             xmlns:viewModels="clr-namespace:PicSender.ViewModels"
+             x:DataType="viewModels:PictureGroupDetailViewModel">
+    
+    <Grid ColumnDefinitions="*,*"
+          ColumnSpacing="5"
+          RowDefinitions="*,Auto">
+    
+        <CollectionView 
+            Grid.ColumnSpan="2" 
+            ItemsSource="{Binding PictureGroup.Pictures}"
+            SelectionMode="None">   
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:SinglePicture">
+                    <Grid Padding="10"> 
+                        <Border HeightRequest="125" 
+                                Padding="0"
+                                Style="{StaticResource CardView}">
+                            <Grid Padding="0" ColumnDefinitions="125,*" >
+                                <Image Source="{Binding FullPath}" 
+                                       Aspect="AspectFill"
+                                       WidthRequest="125"
+                                       HeightRequest="125"/>
+                                <VerticalStackLayout Grid.Column="1" 
+                                                     Padding="10"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding Name}"
+                                           Style="{StaticResource LargeLabel}"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+                
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+        
+        <Button Grid.Row="1"
+                Grid.Column="0"
+                Margin="5"
+                Style="{StaticResource ButtonOutline}"
+                Text="Choose Picture"
+                Command="{Binding PickPictureCommand}" />
+        
+        <Button Grid.Row="1"
+                Grid.Column="1"
+                Margin="5"
+                Style="{StaticResource ButtonOutline}"
+                Text="Take Photo"
+                Command="{Binding TakePictureCommand}"/>
+        
+    </Grid>
+    
+</ContentPage>

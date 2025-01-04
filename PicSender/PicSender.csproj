@@ -66,10 +66,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <MauiXaml Update="Views\MainPage.xaml">
         <SubType>Designer</SubType>
       </MauiXaml>

@@ -10,31 +10,50 @@
           ColumnSpacing="5"
           RowDefinitions="*,Auto">
     
-        <ListView Grid.ColumnSpan="2" ItemsSource="{Binding Pics}">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="models:PicToSend">
-                    <ViewCell>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding Name}" />
-                        </StackLayout>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+    <CollectionView 
+        Grid.ColumnSpan="2" 
+        ItemsSource="{Binding PictureGroups}"
+        SelectionMode="None">
+    <CollectionView.ItemTemplate>
+        <DataTemplate x:DataType="models:PictureGroup">
+            <Grid Padding="10"> 
+                <Border HeightRequest="125" 
+                        Padding="0"
+                        Style="{StaticResource CardView}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=GoToDetailsCommand}"
+                                              CommandParameter="{Binding .}"/>
+                    </Border.GestureRecognizers>
+                    <Grid Padding="0" ColumnDefinitions="125,*" >
+                        
+                        <VerticalStackLayout Grid.Column="1" 
+                                             Padding="10"
+                                             VerticalOptions="Center">
+                            <Label Text="{Binding Title}"
+                                   Style="{StaticResource LargeLabel}"/>
+                            <Label Text="{Binding PictureCount, StringFormat='Pictures: {0}'}"
+                                   Style="{StaticResource MediumLabel}"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
+                
+    </CollectionView.ItemTemplate>
+            
+    </CollectionView>
         
         <Button Grid.Row="1"
                 Grid.Column="0"
                 Margin="5"
                 Style="{StaticResource ButtonOutline}"
-                Text="Choose Picture"
-                Command="{Binding PickPictureCommand}" />
+                Text="New Photo Group" />
         
         <Button Grid.Row="1"
                 Grid.Column="1"
                 Margin="5"
                 Style="{StaticResource ButtonOutline}"
-                Text="Take Photo"
-                Command="{Binding TakePictureCommand}"/>
+                Text="Not used" />
         
     </Grid>
 

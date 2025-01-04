@@ -2,70 +2,35 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using PicSender.Models;
+using PicSender.Services;
+using PicSender.Views;
 
 namespace PicSender.ViewModels;
 
 public partial class MainPageViewModel : BaseViewModel
 {
-    public ObservableCollection<PicToSend> Pics { get; } = [];
-
-    private IMediaPicker _mediaPicker;
+    public ObservableCollection<PictureGroup> PictureGroups { get; } = [];
     
-    public MainPageViewModel(IMediaPicker mediaPicker)
+    public MainPageViewModel()
     {
-        _mediaPicker = mediaPicker;
-        Pics.Add(new PicToSend { Name = "Pic 1" });
-        Pics.Add(new PicToSend { Name = "Pic 2" });
-        Pics.Add(new PicToSend { Name = "Pic 3" });
+        PictureGroups = SampleData.GetSampleData();
     }
 
     [RelayCommand]
-    async Task PickPictureAsync()
+    async Task GoToDetailsAsync(PictureGroup pictureGroup)
     {
-
+        if (pictureGroup is null) return;
+        
         try
         {
-            var picture = await _mediaPicker.PickPhotoAsync();
-            if (picture is null) return;
-            Pics.Add(new PicToSend { Name = picture.FullPath });
+            await Shell.Current.GoToAsync($"{nameof(PictureGroupDetailView)}", true,
+                new Dictionary<string, object> { { nameof(PictureGroup), pictureGroup } });
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error: {ex.Message}");
             await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
         }
-        finally
-        {
-            
-        }
-
-    }
-    
-    [RelayCommand]
-    async Task TakePictureAsync()
-    {
-
-        try
-        {
-           if (!_mediaPicker.IsCaptureSupported)
-           {
-               await Shell.Current.DisplayAlert("Error", "Capture is not supported on this device", "OK");
-               return;
-           }
-           var picture = await _mediaPicker.CapturePhotoAsync();
-           if (picture is null) return;
-           Pics.Add(new PicToSend { Name = picture.FullPath }); 
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
-        }
-        finally
-        {
-            
-        }
-
     }
     
 }
