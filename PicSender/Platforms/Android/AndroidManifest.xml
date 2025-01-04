@@ -9,4 +9,10 @@
 	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	
+	<queries>
+		<intent>
+			<action android:name="android.media.action.IMAGE_CAPTURE" />
+		</intent>
+	</queries>
 </manifest>

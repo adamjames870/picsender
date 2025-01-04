@@ -10,38 +10,31 @@
           ColumnSpacing="5"
           RowDefinitions="*,Auto">
     
-        <CollectionView 
-            Grid.ColumnSpan="2" 
-            ItemsSource="{Binding Monkeys}"
-            SelectionMode="None">
-            
-            <CollectionView.ItemTemplate>
+        <ListView Grid.ColumnSpan="2" ItemsSource="{Binding Pics}">
+            <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:PicToSend">
-                    <Grid Padding="10"> 
-                        <Border HeightRequest="125" 
-                                Padding="0"
-                                Style="{StaticResource CardView}">
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
                             <Label Text="{Binding Name}" />
-                        </Border>
-                    </Grid>
+                        </StackLayout>
+                    </ViewCell>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-            
-        </CollectionView>
+            </ListView.ItemTemplate>
+        </ListView>
         
         <Button Grid.Row="1"
                 Grid.Column="0"
                 Margin="5"
                 Style="{StaticResource ButtonOutline}"
                 Text="Choose Picture"
-                Command="{Binding AddPictureCommand}" />
+                Command="{Binding PickPictureCommand}" />
         
         <Button Grid.Row="1"
                 Grid.Column="1"
                 Margin="5"
                 Style="{StaticResource ButtonOutline}"
                 Text="Take Photo"
-                Command="{Binding TakePhotoCommand}"/>
+                Command="{Binding TakePictureCommand}"/>
         
     </Grid>
 
