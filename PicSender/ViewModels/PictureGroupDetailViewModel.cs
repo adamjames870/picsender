@@ -3,7 +3,6 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PicSender.Models;
-using PicSender.Views;
 
 namespace PicSender.ViewModels;
 
@@ -12,6 +11,9 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
 {
     [ObservableProperty]
     private PictureGroup _pictureGroup;
+
+    [ObservableProperty]
+    private ObservableCollection<SinglePicture>? _pictures;
     
     private IMediaPicker _mediaPicker;
 
@@ -20,15 +22,29 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
         _mediaPicker = mediaPicker;
     }
 
+    public void LoadPictures()
+    {
+        try
+        {
+            Pictures = new ObservableCollection<SinglePicture>(PictureGroup.Pictures);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            Shell.Current.DisplayAlert(nameof(LoadPictures), $"Exception: {ex.Message}", "OK");
+        }
+    }
+    
     [RelayCommand]
     async Task PickPictureAsync()
     {
-
+        
         try
         {
             var picture = await _mediaPicker.PickPhotoAsync();
             if (picture is null) return;
-            PictureGroup.Pictures.Add(new SinglePicture { Name = picture.FullPath });
+            var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
+            Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
         }
         catch (Exception ex)
         {
@@ -55,7 +71,8 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
             }
             var picture = await _mediaPicker.CapturePhotoAsync();
             if (picture is null) return;
-            PictureGroup.Pictures.Add(new SinglePicture { Name = picture.FullPath }); 
+            var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
+            Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath }); 
         }
         catch (Exception ex)
         {

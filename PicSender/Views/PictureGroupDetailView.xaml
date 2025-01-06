@@ -13,7 +13,7 @@
     
         <CollectionView 
             Grid.ColumnSpan="2" 
-            ItemsSource="{Binding PictureGroup.Pictures}"
+            ItemsSource="{Binding Pictures}"
             SelectionMode="None">   
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SinglePicture">
