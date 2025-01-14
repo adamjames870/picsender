@@ -10,11 +10,11 @@ public partial class PictureGroupDetailView : ContentPage
         BindingContext = viewModel;
     }
     
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         var vm = BindingContext as PictureGroupDetailViewModel;
-        vm?.LoadPictures();
+        await vm.LoadPicturesAsync();
     }
     
 }

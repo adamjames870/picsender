@@ -11,6 +11,7 @@ namespace PicSender.ViewModels;
 public partial class MainPageViewModel : BaseViewModel
 {
     public ObservableCollection<PictureGroup> PictureGroups { get; }
+
     private IEmail _email;
 
     public MainPageViewModel(PicDatabase db, IEmail email) : base(db)
@@ -80,6 +81,23 @@ public partial class MainPageViewModel : BaseViewModel
 
             }
         }
-
     }
+    
+    [RelayCommand]
+    async Task DeletePictureGroupAsync(PictureGroup pictureGroup)
+    {
+        if (pictureGroup is null) return;
+
+        try
+        {
+            PictureGroups.Remove(pictureGroup);
+            await database.DeletePictureGroupAsync(pictureGroup);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
+        }
+    }
+    
 }

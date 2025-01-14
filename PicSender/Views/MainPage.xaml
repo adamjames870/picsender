@@ -16,17 +16,32 @@
         SelectionMode="None">
     <CollectionView.ItemTemplate>
         <DataTemplate x:DataType="models:PictureGroup">
-            <SwipeView Threshold="300">
+            <SwipeView>
                 
                 <SwipeView.LeftItems>
                     <SwipeItems Mode="Execute">
                         <SwipeItem Text="Email"
                                    IconImageSource="email24.png"
-                                   BackgroundColor="CadetBlue"
+                                   BackgroundColor="LawnGreen"
                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=SendEmailCommand}"
                                    CommandParameter="{Binding .}"/>
                     </SwipeItems>
                 </SwipeView.LeftItems>
+                
+                <SwipeView.RightItems>
+                    <SwipeItems Mode="Reveal">
+                        <SwipeItem Text="Delete"
+                                   IconImageSource="delete24.png"
+                                   BackgroundColor="IndianRed"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=DeletePictureGroupCommand}"
+                                   CommandParameter="{Binding .}"/>
+                        <SwipeItem Text="Rename"
+                                   IconImageSource="rename24.png"
+                                   BackgroundColor="LightBlue"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=RenamePictureGroupCommand}"
+                                   CommandParameter="{Binding .}"/>
+                    </SwipeItems>
+                </SwipeView.RightItems>
                 
                 <Grid Padding="10"> 
                     <Border HeightRequest="125" 

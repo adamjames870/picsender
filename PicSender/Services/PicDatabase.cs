@@ -66,5 +66,5 @@ public class PicDatabase
         await _db.Table<SinglePicture>().Where(p => p.PictureGroup.Id == group.Id).DeleteAsync();
         await _db.DeleteAsync(group);
     }
-    
+
 }
