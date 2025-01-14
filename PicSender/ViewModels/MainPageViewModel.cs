@@ -5,17 +5,20 @@ using PicSender.Models;
 using PicSender.Services;
 using PicSender.Views;
 
+
 namespace PicSender.ViewModels;
 
 public partial class MainPageViewModel : BaseViewModel
 {
-    public ObservableCollection<PictureGroup> PictureGroups { get; } = [];
+    public ObservableCollection<PictureGroup> PictureGroups { get; }
     
     public MainPageViewModel(PicDatabase db) : base(db)
     {
-        PictureGroups = SampleData.GetSampleData();
+        // PictureGroups = SampleData.GetSampleData();
+        var list = Task.Run(() => database.GetPictureGroupsAsync()).Result;
+        PictureGroups = new ObservableCollection<PictureGroup>(list);
     }
-
+    
     [RelayCommand]
     async Task GoToDetailsAsync(PictureGroup pictureGroup)
     {
