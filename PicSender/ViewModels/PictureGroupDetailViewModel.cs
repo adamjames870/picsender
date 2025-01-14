@@ -47,7 +47,7 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
             Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
-            await database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroup = PictureGroup });
+            await database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id });
         }
         catch (Exception ex)
         {
@@ -76,7 +76,7 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
             Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
-            await database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroup = PictureGroup }); 
+            await database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id }); 
         }
         catch (Exception ex)
         {

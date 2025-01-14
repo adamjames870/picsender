@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using PicSender.Models;
 using SQLite;
 using Path = System.IO.Path;
@@ -10,7 +11,6 @@ public class PicDatabase
     private async Task Init()
     {
         if (_db is not null) return;
-        
         var databasePath = Path.Combine(FileSystem.Current.AppDataDirectory, "PicSender.db");
         _db = new SQLiteAsyncConnection(databasePath);
         await _db.CreateTableAsync<SinglePicture>();
@@ -24,24 +24,12 @@ public class PicDatabase
         return await _db.Table<PictureGroup>().ToListAsync();
     }
     
-    public async Task<List<SinglePicture>> GetPicturesAsync()
-    {
-        await Init();
-        return await _db.Table<SinglePicture>().ToListAsync();
-    }
-    
     public async Task<List<SinglePicture>> GetPicturesAsync(PictureGroup group)
     {
         await Init();
-        return await _db.Table<SinglePicture>().Where(p => p.PictureGroup.Id == group.Id).ToListAsync();
+        return await _db.Table<SinglePicture>().Where(p => p.PictureGroupId == group.Id).ToListAsync();
     }
-    
-    public async Task<SinglePicture> GetPictureAsync(int id)
-    {
-        await Init();
-        return await _db.Table<SinglePicture>().Where(p => p.Id == id).FirstOrDefaultAsync();
-    }
-    
+
     public async Task AddPictureAsync(SinglePicture picture)
     {
         await Init();
@@ -60,11 +48,21 @@ public class PicDatabase
         await _db.InsertAsync(newGroup);
     }
     
-    public async Task DeletePictureGroupAsync(PictureGroup group)
+    public async Task DeletePictureGroupAsync(int groupId)
     {
-        await Init();
-        await _db.Table<SinglePicture>().Where(p => p.PictureGroup.Id == group.Id).DeleteAsync();
-        await _db.DeleteAsync(group);
+        
+        try
+        {
+            await Init();
+            await _db.Table<PictureGroup>().Where(g => g.Id == groupId).DeleteAsync();
+            var pics = _db.Table<SinglePicture>().Where(p => p.PictureGroupId == groupId);
+            if (pics is not null) await pics.DeleteAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            await Shell.Current.DisplayAlert($"Error in {nameof(DeletePictureGroupAsync)} in PicDb", $"Exception: {ex.Message}", "OK");
+        }
     }
 
 }

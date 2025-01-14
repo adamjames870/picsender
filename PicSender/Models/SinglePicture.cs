@@ -9,6 +9,5 @@ public class SinglePicture
     public int Id { get; set; }
     public string Name { get; set; }
     public string? FullPath { get; set; }
-    [ManyToOne]
-    public PictureGroup PictureGroup { get; set; }
+    public int PictureGroupId { get; set; }
 }

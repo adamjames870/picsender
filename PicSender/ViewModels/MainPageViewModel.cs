@@ -57,19 +57,8 @@ public partial class MainPageViewModel : BaseViewModel
         {
             try
             {
-                var subject = $"Pictures from {pictureGroup.Title}";
-                const string body = "It was great to see you last weekend.";
-                var recipients = new[] { "adam@adamjames.me.uk", "adam.james870@yahoo.co.uk" };
-
-                var message = new EmailMessage
-                {
-                    Subject = subject,
-                    Body = body,
-                    BodyFormat = EmailBodyFormat.PlainText,
-                    To = [..recipients]
-                };
-
-                await Email.Default.ComposeAsync(message);
+                using var emailService = new Emails(_email);
+                await emailService.SendSampleEmailAsync(pictureGroup);
             }
             catch (Exception ex)
             {
@@ -91,12 +80,12 @@ public partial class MainPageViewModel : BaseViewModel
         try
         {
             PictureGroups.Remove(pictureGroup);
-            await database.DeletePictureGroupAsync(pictureGroup);
+            await database.DeletePictureGroupAsync(pictureGroup.Id);
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error: {ex.Message}");
-            await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlert($"Error in {nameof(DeletePictureGroupCommand)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
         }
     }
     

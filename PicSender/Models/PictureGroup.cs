@@ -8,9 +8,8 @@ public class PictureGroup
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
     public string Title { get; set; }
-    [OneToMany(CascadeOperations = CascadeOperation.All)]
-    public List<SinglePicture> Pictures { get; } = [];
+    public List<int> PictureIds { get; } = [];
     
-    public int PictureCount => Pictures.Count;
+    public int PictureCount => PictureIds.Count;
     
 }
