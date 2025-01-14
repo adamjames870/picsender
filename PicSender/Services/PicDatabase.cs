@@ -24,10 +24,10 @@ public class PicDatabase
         return await _db.Table<PictureGroup>().ToListAsync();
     }
     
-    public async Task<List<SinglePicture>> GetPicturesAsync(PictureGroup group)
+    public async Task<List<SinglePicture>> GetPicturesAsync(int pictureGroupId)
     {
         await Init();
-        return await _db.Table<SinglePicture>().Where(p => p.PictureGroupId == group.Id).ToListAsync();
+        return await _db.Table<SinglePicture>().Where(p => p.PictureGroupId == pictureGroupId).ToListAsync();
     }
 
     public async Task AddPictureAsync(SinglePicture picture)

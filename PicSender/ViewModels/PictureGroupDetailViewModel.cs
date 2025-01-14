@@ -27,7 +27,7 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
     {
         try
         {
-            var pics = await database.GetPicturesAsync(PictureGroup) ?? [];
+            var pics = await database.GetPicturesAsync(PictureGroup.Id) ?? [];
             Pictures = new ObservableCollection<SinglePicture>(pics);
         }
         catch (Exception ex)

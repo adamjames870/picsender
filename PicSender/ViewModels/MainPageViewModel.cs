@@ -58,7 +58,8 @@ public partial class MainPageViewModel : BaseViewModel
             try
             {
                 using var emailService = new Emails(_email);
-                await emailService.SendSampleEmailAsync(pictureGroup);
+                var pictures = await database.GetPicturesAsync(pictureGroup.Id);
+                await emailService.SendEmailWithAttachaments(pictureGroup, pictures);
             }
             catch (Exception ex)
             {
