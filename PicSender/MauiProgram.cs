@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PicSender.Services;
 using PicSender.ViewModels;
 using PicSender.Views;
 
@@ -18,6 +19,8 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton(MediaPicker.Default);
+
+        builder.Services.AddSingleton<PicDatabase>();
         
         builder.Services.AddSingleton<MainPageViewModel>();
         builder.Services.AddTransient<PictureGroupDetailViewModel>();

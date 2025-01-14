@@ -3,6 +3,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PicSender.Models;
+using PicSender.Services;
 
 namespace PicSender.ViewModels;
 
@@ -17,7 +18,7 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
     
     private IMediaPicker _mediaPicker;
 
-    public PictureGroupDetailViewModel(IMediaPicker mediaPicker)
+    public PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDatabase db) : base(db)
     {
         _mediaPicker = mediaPicker;
     }

@@ -4,29 +4,53 @@ using Path = System.IO.Path;
 
 namespace PicSender.Services;
 
-public static class PicDatabase
+public class PicDatabase
 {
-    private static SQLiteAsyncConnection _db;
-    static async Task Init()
+    private SQLiteAsyncConnection _db;
+    private async Task Init()
     {
-        if (_db is null) return;
+        if (_db is not null) return;
         
         var databasePath = Path.Combine(FileSystem.Current.AppDataDirectory, "PicSender.db");
         _db = new SQLiteAsyncConnection(databasePath);
         await _db.CreateTableAsync<SinglePicture>();
+        await _db.CreateTableAsync<PictureGroup>();
 
     }
     
-    public static async Task AddPictureAsync(SinglePicture picture)
+    public async Task<List<PictureGroup>> GetPictureGroupsAsync()
+    {
+        await Init();
+        return await _db.Table<PictureGroup>().ToListAsync();
+    }
+    
+    public async Task<List<SinglePicture>> GetPicturesAsync()
+    {
+        await Init();
+        return await _db.Table<SinglePicture>().ToListAsync();
+    }
+    
+    public async Task<SinglePicture> GetPictureAsync(int id)
+    {
+        await Init();
+        return await _db.Table<SinglePicture>().Where(p => p.Id == id).FirstOrDefaultAsync();
+    }
+    
+    public async Task AddPictureAsync(SinglePicture picture)
     {
         await Init();
         await _db.InsertAsync(picture);
     }
     
-    public static async Task DeletePictureAsync(SinglePicture picture)
+    public async Task DeletePictureAsync(SinglePicture picture)
     {
         await Init();
         await _db.DeleteAsync(picture);
     }
-    
+
+    public async Task AddPictureGroupAsync(PictureGroup newGroup)
+    {
+        await Init();
+        await _db.InsertAsync(newGroup);
+    }
 }

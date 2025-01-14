@@ -11,7 +11,7 @@ public partial class MainPageViewModel : BaseViewModel
 {
     public ObservableCollection<PictureGroup> PictureGroups { get; } = [];
     
-    public MainPageViewModel()
+    public MainPageViewModel(PicDatabase db) : base(db)
     {
         PictureGroups = SampleData.GetSampleData();
     }
@@ -31,6 +31,17 @@ public partial class MainPageViewModel : BaseViewModel
             Debug.WriteLine($"Error: {ex.Message}");
             await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
         }
+    }
+    
+    [RelayCommand]
+    async Task AddPictureGroupAsync()
+    {
+        var title = await Shell.Current.DisplayPromptAsync("Title", "Enter a title for the new group");
+        if (string.IsNullOrWhiteSpace(title)) return;
+        
+        var newGroup = new PictureGroup { Title = title };
+        PictureGroups.Add(newGroup);
+        await database.AddPictureGroupAsync(newGroup);
     }
     
 }
