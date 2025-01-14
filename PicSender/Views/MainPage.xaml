@@ -16,27 +16,40 @@
         SelectionMode="None">
     <CollectionView.ItemTemplate>
         <DataTemplate x:DataType="models:PictureGroup">
-            <Grid Padding="10"> 
-                <Border HeightRequest="125" 
-                        Padding="0"
-                        Style="{StaticResource CardView}">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=GoToDetailsCommand}"
-                                              CommandParameter="{Binding .}"/>
-                    </Border.GestureRecognizers>
-                    <Grid Padding="0" ColumnDefinitions="125,*" >
-                        
-                        <VerticalStackLayout Grid.Column="1" 
-                                             Padding="10"
-                                             VerticalOptions="Center">
-                            <Label Text="{Binding Title}"
-                                   Style="{StaticResource LargeLabel}"/>
-                            <Label Text="{Binding PictureCount, StringFormat='Pictures: {0}'}"
-                                   Style="{StaticResource MediumLabel}"/>
-                        </VerticalStackLayout>
-                    </Grid>
-                </Border>
-            </Grid>
+            <SwipeView Threshold="300">
+                
+                <SwipeView.LeftItems>
+                    <SwipeItems Mode="Execute">
+                        <SwipeItem Text="Email"
+                                   IconImageSource="email24.png"
+                                   BackgroundColor="CadetBlue"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=SendEmailCommand}"
+                                   CommandParameter="{Binding .}"/>
+                    </SwipeItems>
+                </SwipeView.LeftItems>
+                
+                <Grid Padding="10"> 
+                    <Border HeightRequest="125" 
+                            Padding="0"
+                            Style="{StaticResource CardView}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:MainPageViewModel}}, Path=GoToDetailsCommand}"
+                                                  CommandParameter="{Binding .}"/>
+                        </Border.GestureRecognizers>
+                        <Grid Padding="0" ColumnDefinitions="125,*" >
+                            
+                            <VerticalStackLayout Grid.Column="1" 
+                                                 Padding="10"
+                                                 VerticalOptions="Center">
+                                <Label Text="{Binding Title}"
+                                       Style="{StaticResource LargeLabel}"/>
+                                <Label Text="{Binding PictureCount, StringFormat='Pictures: {0}'}"
+                                       Style="{StaticResource MediumLabel}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </SwipeView>
         </DataTemplate>
                 
     </CollectionView.ItemTemplate>

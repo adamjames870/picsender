@@ -19,6 +19,7 @@ public static class MauiProgram
             });
 
         builder.Services.AddSingleton(MediaPicker.Default);
+        builder.Services.AddSingleton(Email.Default);
 
         builder.Services.AddSingleton<PicDatabase>();
         

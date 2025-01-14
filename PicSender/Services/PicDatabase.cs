@@ -30,6 +30,12 @@ public class PicDatabase
         return await _db.Table<SinglePicture>().ToListAsync();
     }
     
+    public async Task<List<SinglePicture>> GetPicturesAsync(PictureGroup group)
+    {
+        await Init();
+        return await _db.Table<SinglePicture>().Where(p => p.PictureGroup.Id == group.Id).ToListAsync();
+    }
+    
     public async Task<SinglePicture> GetPictureAsync(int id)
     {
         await Init();
@@ -53,4 +59,12 @@ public class PicDatabase
         await Init();
         await _db.InsertAsync(newGroup);
     }
+    
+    public async Task DeletePictureGroupAsync(PictureGroup group)
+    {
+        await Init();
+        await _db.Table<SinglePicture>().Where(p => p.PictureGroup.Id == group.Id).DeleteAsync();
+        await _db.DeleteAsync(group);
+    }
+    
 }

@@ -14,7 +14,7 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
     private PictureGroup _pictureGroup;
 
     [ObservableProperty]
-    private ObservableCollection<SinglePicture>? _pictures;
+    private ObservableCollection<SinglePicture> _pictures;
     
     private IMediaPicker _mediaPicker;
 
@@ -46,6 +46,7 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
             Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
+            database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroup = PictureGroup });
         }
         catch (Exception ex)
         {
@@ -73,7 +74,8 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
             var picture = await _mediaPicker.CapturePhotoAsync();
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
-            Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath }); 
+            Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
+            database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroup = PictureGroup }); 
         }
         catch (Exception ex)
         {
