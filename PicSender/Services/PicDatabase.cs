@@ -65,4 +65,9 @@ public class PicDatabase
         }
     }
 
+    public async Task<PictureGroup> GetPictureGroupAsync(int pictureGroupId)
+    {
+        await Init();
+        return await _db.Table<PictureGroup>().Where(g => g.Id == pictureGroupId).FirstOrDefaultAsync();
+    }
 }

@@ -8,5 +8,5 @@ public class PictureGroupItemModel(PictureGroup pictureGroup)
 {
     public int PictureGroupId => pictureGroup.Id;
     public new string Title => pictureGroup.Title;
-    public int PictureCount => pictureGroup.PictureIds.Count;
+    public string PictureCount => pictureGroup.PictureIds.Count.ToString();
 }

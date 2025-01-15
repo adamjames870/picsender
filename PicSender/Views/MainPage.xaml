@@ -12,10 +12,10 @@
     
     <CollectionView 
         Grid.ColumnSpan="2" 
-        ItemsSource="{Binding PictureGroups}"
+        ItemsSource="{Binding PictureGroupItems}"
         SelectionMode="None">
     <CollectionView.ItemTemplate>
-        <DataTemplate x:DataType="models:PictureGroup">
+        <DataTemplate x:DataType="viewModels:PictureGroupItemModel">
             <SwipeView>
                 
                 <SwipeView.LeftItems>
