@@ -11,4 +11,11 @@ public partial class MainPage : ContentPage
         BindingContext = viewModel;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        var vm = BindingContext as MainPageViewModel;
+        await vm.LoadPictureGroups();
+    }
+    
 }

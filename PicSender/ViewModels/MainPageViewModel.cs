@@ -11,6 +11,7 @@ namespace PicSender.ViewModels;
 public partial class MainPageViewModel : BaseViewModel
 {
     public ObservableCollection<PictureGroup> PictureGroups { get; }
+    public ObservableCollection<PictureGroupItemModel> PictureGroupItems { get; private set; }
 
     private IEmail _email;
 
@@ -19,7 +20,25 @@ public partial class MainPageViewModel : BaseViewModel
         // PictureGroups = SampleData.GetSampleData();
         var list = Task.Run(() => database.GetPictureGroupsAsync()).Result;
         PictureGroups = new ObservableCollection<PictureGroup>(list);
+        PictureGroupItems = [];
         _email = email;
+    }
+
+    public async Task LoadPictureGroups()
+    {
+        try
+        {
+            var list = await database.GetPictureGroupsAsync();
+            var groups = list.Select(group => group.ToPictureGroupItemModel()).ToList();
+            PictureGroupItems = new ObservableCollection<PictureGroupItemModel>(groups);
+            await Shell.Current.DisplayAlert(nameof(LoadPictureGroups), $"Loaded {PictureGroupItems.Count} ItemModels.",
+                "OK");
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            await Shell.Current.DisplayAlert(nameof(LoadPictureGroups), $"Exception: {ex.Message}", "OK");
+        }
     }
 
     [RelayCommand]
@@ -76,8 +95,6 @@ public partial class MainPageViewModel : BaseViewModel
     [RelayCommand]
     async Task DeletePictureGroupAsync(PictureGroup pictureGroup)
     {
-        if (pictureGroup is null) return;
-
         try
         {
             PictureGroups.Remove(pictureGroup);
