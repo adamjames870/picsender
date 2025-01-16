@@ -17,6 +17,23 @@
             SelectionMode="None">   
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:SinglePicture">
+                <SwipeView>
+                
+                    <SwipeView.RightItems>
+                        <SwipeItems Mode="Reveal">
+                            <SwipeItem Text="Delete"
+                                       IconImageSource="delete24.png"
+                                       BackgroundColor="IndianRed"
+                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PictureGroupDetailViewModel}}, Path=DeletePictureCommand}"
+                                       CommandParameter="{Binding .}"/>
+                            <SwipeItem Text="Rename"
+                                       IconImageSource="rename24.png"
+                                       BackgroundColor="LightBlue"
+                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:PictureGroupDetailViewModel}}, Path=RenamePictureCommand}"
+                                       CommandParameter="{Binding .}"/>
+                        </SwipeItems>
+                    </SwipeView.RightItems>
+                    
                     <Grid Padding="10"> 
                         <Border HeightRequest="125" 
                                 Padding="0"
@@ -35,6 +52,7 @@
                             </Grid>
                         </Border>
                     </Grid>
+                </SwipeView>    
                 </DataTemplate>
                 
             </CollectionView.ItemTemplate>

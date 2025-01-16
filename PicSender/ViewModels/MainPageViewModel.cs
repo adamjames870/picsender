@@ -130,7 +130,7 @@ public partial class MainPageViewModel : BaseViewModel
         catch (Exception ex)
         {
             Debug.WriteLine($"Error: {ex.Message}");
-            await Shell.Current.DisplayAlert($"Error in {nameof(DeletePictureGroupCommand)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
+            await Shell.Current.DisplayAlert($"Error in {nameof(RenamePictureGroupAsync)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
         }
     }
     

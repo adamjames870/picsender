@@ -8,30 +8,19 @@ using PicSender.Services;
 namespace PicSender.ViewModels;
 
 [QueryProperty(nameof(PictureGroup), "PictureGroup")]
-public partial class PictureGroupDetailViewModel : BaseViewModel
+public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDatabase db) : BaseViewModel
 {
-    
-    private PicDatabase database;
-    
     [ObservableProperty]
-    private PictureGroup _pictureGroup;
+    private PictureGroup _pictureGroup = null!;
 
     [ObservableProperty]
-    private ObservableCollection<SinglePicture> _pictures;
-    
-    private IMediaPicker _mediaPicker;
-
-    public PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDatabase db)
-    {
-        database = db;
-        _mediaPicker = mediaPicker;
-    }
+    private ObservableCollection<SinglePicture> _pictures = null!;
 
     public async Task LoadPicturesAsync()
     {
         try
         {
-            var pics = await database.GetPicturesAsync(PictureGroup.Id) ?? [];
+            var pics = await db.GetPicturesAsync(PictureGroup.Id) ?? [];
             Pictures = new ObservableCollection<SinglePicture>(pics);
         }
         catch (Exception ex)
@@ -42,16 +31,16 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
     }
     
     [RelayCommand]
-    async Task PickPictureAsync()
+    private async Task PickPictureAsync()
     {
         
         try
         {
-            var picture = await _mediaPicker.PickPhotoAsync();
+            var picture = await mediaPicker.PickPhotoAsync();
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
             Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
-            await database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id });
+            await db.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id });
         }
         catch (Exception ex)
         {
@@ -66,21 +55,21 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
     }
     
     [RelayCommand]
-    async Task TakePictureAsync()
+    private async Task TakePictureAsync()
     {
 
         try
         {
-            if (!_mediaPicker.IsCaptureSupported)
+            if (!mediaPicker.IsCaptureSupported)
             {
                 await Shell.Current.DisplayAlert("Error", "Capture is not supported on this device", "OK");
                 return;
             }
-            var picture = await _mediaPicker.CapturePhotoAsync();
+            var picture = await mediaPicker.CapturePhotoAsync();
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
             Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
-            await database.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id }); 
+            await db.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id }); 
         }
         catch (Exception ex)
         {
@@ -92,6 +81,42 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
             
         }
 
+    }
+    
+    [RelayCommand]
+    async Task DeletePictureAsync(SinglePicture picture)
+    {
+        try
+        {
+            Pictures.Remove(picture);
+            await db.DeletePictureAsync(picture);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            await Shell.Current.DisplayAlert($"Error in {nameof(DeletePictureAsync)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
+        }
+    }
+
+    [RelayCommand]
+    async Task RenamePictureAsync(SinglePicture picture)
+    {
+        try
+        {
+            var newName = await Shell.Current.DisplayPromptAsync("Name", "Enter the name for the picture", "OK", "Cancel", picture.Name);
+            if (!string.IsNullOrEmpty(newName) && newName != picture.Name)
+            {
+                picture.Name = newName;
+                OnPropertyChanged(nameof(picture.Name));
+                await db.UpdatePictureAsync(picture);
+            }
+            
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            await Shell.Current.DisplayAlert($"Error in {nameof(RenamePictureCommand)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
+        }
     }
     
 }

@@ -74,8 +74,14 @@ public class PicDatabase
     public async Task<int> UpdatePictureGroupAsync(PictureGroup pictureGroup)
     {
         await Init();
-        var newGroup = await _db.UpdateAsync(pictureGroup);
-        return newGroup;
+        var updatedRecords = await _db.UpdateAsync(pictureGroup);
+        return updatedRecords;
     }
-    
+
+    public async Task<int> UpdatePictureAsync(SinglePicture picture)
+    {
+        await Init();
+        var updatedRecords = await _db.UpdateAsync(picture);
+        return updatedRecords;
+    }
 }
