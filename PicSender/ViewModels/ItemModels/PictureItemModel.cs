@@ -13,5 +13,5 @@ public class PictureItemModel (SinglePicture singlePicture) : BaseViewModel
         OnPropertyChanged(nameof(Name));
         return singlePicture;
     }
-    
+    public SinglePicture GetPicture()  => singlePicture;
 }

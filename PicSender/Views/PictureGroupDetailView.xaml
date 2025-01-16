@@ -3,7 +3,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PicSender.Views.PictureGroupDetailView"
-             xmlns:models="clr-namespace:PicSender.Models"
+             xmlns:itemModels="clr-namespace:PicSender.ViewModels.ItemModels"
              xmlns:viewModels="clr-namespace:PicSender.ViewModels"
              x:DataType="viewModels:PictureGroupDetailViewModel">
     
@@ -16,7 +16,7 @@
             ItemsSource="{Binding Pictures}"
             SelectionMode="None">   
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:SinglePicture">
+                <DataTemplate x:DataType="itemModels:PictureItemModel">
                 <SwipeView>
                 
                     <SwipeView.RightItems>

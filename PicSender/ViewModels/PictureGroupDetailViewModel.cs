@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PicSender.Models;
 using PicSender.Services;
+using PicSender.ViewModels.ItemModels;
 
 namespace PicSender.ViewModels;
 
@@ -14,15 +15,15 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
     private PictureGroup _pictureGroup = null!;
 
     [ObservableProperty]
-    private ObservableCollection<SinglePicture> _pictures = null!;
+    private ObservableCollection<PictureItemModel> _pictures = null!;
 
     public async Task LoadPicturesAsync()
     {
         try
         {
-            var pics = await db.GetPicturesAsync(PictureGroup.Id) ?? [];
+            var pics = await db.GetPicturesAsync(PictureGroup.Id);
             var picModels = pics.Select(p => p.ToPictureItemModel()).ToList();
-            Pictures = new ObservableCollection<SinglePicture>(pics);
+            Pictures = new ObservableCollection<PictureItemModel>(picModels);
         }
         catch (Exception ex)
         {
@@ -40,17 +41,14 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
             var picture = await mediaPicker.PickPhotoAsync();
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
-            Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
-            await db.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id });
+            var singlePicture = new SinglePicture { Name = name, FullPath = picture.FullPath };
+            Pictures.Add(singlePicture.ToPictureItemModel());
+            await db.AddPictureAsync(singlePicture);
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error: {ex.Message}");
             await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
-        }
-        finally
-        {
-            
         }
 
     }
@@ -69,28 +67,24 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
             var picture = await mediaPicker.CapturePhotoAsync();
             if (picture is null) return;
             var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
-            Pictures.Add(new SinglePicture { Name = name, FullPath = picture.FullPath });
-            await db.AddPictureAsync(new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id }); 
+            var singlePicture = new SinglePicture { Name = name, FullPath = picture.FullPath };
+            Pictures.Add(singlePicture.ToPictureItemModel());
+            await db.AddPictureAsync(singlePicture); 
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error: {ex.Message}");
             await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
         }
-        finally
-        {
-            
-        }
-
     }
     
     [RelayCommand]
-    async Task DeletePictureAsync(SinglePicture picture)
+    private async Task DeletePictureAsync(PictureItemModel picture)
     {
         try
         {
             Pictures.Remove(picture);
-            await db.DeletePictureAsync(picture);
+            await db.DeletePictureAsync(picture.GetPicture());
         }
         catch (Exception ex)
         {
@@ -100,16 +94,15 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
     }
 
     [RelayCommand]
-    async Task RenamePictureAsync(SinglePicture picture)
+    private async Task RenamePictureAsync(PictureItemModel picture)
     {
         try
         {
             var newName = await Shell.Current.DisplayPromptAsync("Name", "Enter the name for the picture", "OK", "Cancel", picture.Name);
             if (!string.IsNullOrEmpty(newName) && newName != picture.Name)
             {
-                picture.Name = newName;
-                OnPropertyChanged(nameof(picture.Name));
-                await db.UpdatePictureAsync(picture);
+                var newPic = picture.ChangeName(newName);
+                await db.UpdatePictureAsync(newPic);
             }
             
         }
