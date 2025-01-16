@@ -21,6 +21,7 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
         try
         {
             var pics = await db.GetPicturesAsync(PictureGroup.Id) ?? [];
+            var picModels = pics.Select(p => p.ToPictureItemModel()).ToList();
             Pictures = new ObservableCollection<SinglePicture>(pics);
         }
         catch (Exception ex)

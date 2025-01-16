@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PicSender.Models;
 using PicSender.Services;
+using PicSender.ViewModels.ItemModels;
 using PicSender.Views;
 
 
@@ -12,14 +13,14 @@ namespace PicSender.ViewModels;
 public partial class MainPageViewModel : BaseViewModel
 {
 
-    private PicDatabase database;
+    private readonly PicDatabase database;
     
     public ObservableCollection<PictureGroup> PictureGroups { get; }
     
     [ObservableProperty] 
     public ObservableCollection<PictureGroupItemModel> _pictureGroupItems;
 
-    private IEmail _email;
+    private readonly IEmail _email;
 
     public MainPageViewModel(PicDatabase db, IEmail email)
     {

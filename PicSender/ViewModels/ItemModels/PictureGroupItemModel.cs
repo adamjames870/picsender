@@ -1,8 +1,6 @@
-using CommunityToolkit.Mvvm.ComponentModel;
 using PicSender.Models;
-using PicSender.Services;
 
-namespace PicSender.ViewModels;
+namespace PicSender.ViewModels.ItemModels;
 
 public class PictureGroupItemModel(PictureGroup pictureGroup) : BaseViewModel
 {
