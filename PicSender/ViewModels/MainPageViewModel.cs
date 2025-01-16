@@ -14,7 +14,7 @@ public partial class MainPageViewModel : BaseViewModel
     public ObservableCollection<PictureGroup> PictureGroups { get; }
     
     [ObservableProperty] 
-    private ObservableCollection<PictureGroupItemModel> _pictureGroupItems;
+    public ObservableCollection<PictureGroupItemModel> _pictureGroupItems;
 
     private IEmail _email;
 
@@ -66,7 +66,7 @@ public partial class MainPageViewModel : BaseViewModel
         if (string.IsNullOrWhiteSpace(title)) return;
 
         var newGroup = new PictureGroup { Title = title };
-        PictureGroups.Add(newGroup);
+        PictureGroupItems.Add(new PictureGroupItemModel(newGroup));
         await database.AddPictureGroupAsync(newGroup);
     }
 
@@ -99,9 +99,23 @@ public partial class MainPageViewModel : BaseViewModel
     {
         try
         {
+            PictureGroupItems.Remove(pictureGroupItemModel);
+            await database.DeletePictureGroupAsync(pictureGroupItemModel.PictureGroupId);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            await Shell.Current.DisplayAlert($"Error in {nameof(DeletePictureGroupCommand)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
+        }
+    }
+
+    [RelayCommand]
+    async Task RenamePictureGroupAsync(PictureGroupItemModel pictureGroupItemModel)
+    {
+        try
+        {
             var pictureGroup = await database.GetPictureGroupAsync(pictureGroupItemModel.PictureGroupId);
-            PictureGroups.Remove(pictureGroup);
-            await database.DeletePictureGroupAsync(pictureGroup.Id);
+            var newTitle = await Shell.Current.DisplayPromptAsync("Title", "Enter the title for the group", "OK", "Cancel", pictureGroupItemModel.Title);
         }
         catch (Exception ex)
         {
