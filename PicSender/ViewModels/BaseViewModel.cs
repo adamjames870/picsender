@@ -3,10 +3,8 @@ using PicSender.Services;
 
 namespace PicSender.ViewModels;
 
-public abstract partial class BaseViewModel(PicDatabase db) : ObservableObject
+public abstract partial class BaseViewModel() : ObservableObject
 {
-
-    protected PicDatabase database = db;
     
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]

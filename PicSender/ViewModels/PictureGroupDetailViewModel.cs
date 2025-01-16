@@ -10,6 +10,9 @@ namespace PicSender.ViewModels;
 [QueryProperty(nameof(PictureGroup), "PictureGroup")]
 public partial class PictureGroupDetailViewModel : BaseViewModel
 {
+    
+    private PicDatabase database;
+    
     [ObservableProperty]
     private PictureGroup _pictureGroup;
 
@@ -18,8 +21,9 @@ public partial class PictureGroupDetailViewModel : BaseViewModel
     
     private IMediaPicker _mediaPicker;
 
-    public PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDatabase db) : base(db)
+    public PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDatabase db)
     {
+        database = db;
         _mediaPicker = mediaPicker;
     }
 

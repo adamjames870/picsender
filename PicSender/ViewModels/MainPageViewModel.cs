@@ -11,6 +11,9 @@ namespace PicSender.ViewModels;
 
 public partial class MainPageViewModel : BaseViewModel
 {
+
+    private PicDatabase database;
+    
     public ObservableCollection<PictureGroup> PictureGroups { get; }
     
     [ObservableProperty] 
@@ -18,8 +21,9 @@ public partial class MainPageViewModel : BaseViewModel
 
     private IEmail _email;
 
-    public MainPageViewModel(PicDatabase db, IEmail email) : base(db)
+    public MainPageViewModel(PicDatabase db, IEmail email)
     {
+        database = db;
         // PictureGroups = SampleData.GetSampleData();
         var list = Task.Run(() => database.GetPictureGroupsAsync()).Result;
         PictureGroups = new ObservableCollection<PictureGroup>(list);
@@ -114,8 +118,14 @@ public partial class MainPageViewModel : BaseViewModel
     {
         try
         {
-            var pictureGroup = await database.GetPictureGroupAsync(pictureGroupItemModel.PictureGroupId);
+            // var pictureGroup = await database.GetPictureGroupAsync(pictureGroupItemModel.PictureGroupId);
             var newTitle = await Shell.Current.DisplayPromptAsync("Title", "Enter the title for the group", "OK", "Cancel", pictureGroupItemModel.Title);
+            if (!string.IsNullOrEmpty(newTitle) && newTitle != pictureGroupItemModel.Title)
+            {
+                var newModel = pictureGroupItemModel.ChangeTitle(newTitle);
+                await database.UpdatePictureGroupAsync(newModel);
+            }
+            
         }
         catch (Exception ex)
         {

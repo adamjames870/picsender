@@ -70,4 +70,12 @@ public class PicDatabase
         await Init();
         return await _db.Table<PictureGroup>().Where(g => g.Id == pictureGroupId).FirstOrDefaultAsync();
     }
+
+    public async Task<int> UpdatePictureGroupAsync(PictureGroup pictureGroup)
+    {
+        await Init();
+        var newGroup = await _db.UpdateAsync(pictureGroup);
+        return newGroup;
+    }
+    
 }
