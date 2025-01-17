@@ -83,7 +83,7 @@ public partial class MainPageViewModel : BaseViewModel
             try
             {
                 var pictureGroup = await database.GetPictureGroupAsync(pictureGroupItemModel.PictureGroupId);
-                using var emailService = new Emails(_email);
+                using var emailService = new Emails(_email, database);
                 var pictures = await database.GetPicturesAsync(pictureGroup.Id);
                 await emailService.SendEmailWithAttachaments(pictureGroup, pictures);
             }
@@ -140,9 +140,7 @@ public partial class MainPageViewModel : BaseViewModel
     {
         try
         {
-            var options = await database.GetAppOptionsAsync();
-            await Shell.Current.GoToAsync($"{nameof(OptionsView)}", true,
-                new Dictionary<string, object> { { nameof(AppOptions), options } });
+            await Shell.Current.GoToAsync($"{nameof(OptionsView)}", true);
         }
         catch (Exception ex)
         {

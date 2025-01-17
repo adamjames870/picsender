@@ -89,7 +89,13 @@ public class PicDatabase
     public async Task<AppOptions> GetAppOptionsAsync()
     {
         await Init();
-        return await _db.Table<AppOptions>().FirstOrDefaultAsync();
+        var options = await _db.Table<AppOptions>().FirstOrDefaultAsync();
+        return options ?? new AppOptions { EmailAddress = string.Empty };
     }
 
+    public async Task SaveAppOptionsAsync(AppOptions appOptions)
+    {
+        await Init();
+        await _db.InsertOrReplaceAsync(appOptions);
+    }
 }

@@ -2,8 +2,29 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PicSender.Views.OptionsView">
-    <ContentPage.Content>
+             xmlns:viewModels="clr-namespace:PicSender.ViewModels"
+             x:Class="PicSender.Views.OptionsView"
+             x:DataType="viewModels:OptionsViewModel">
+    
+    <VerticalStackLayout Padding="10">
+
+        <Label Text="Email Address"
+               Style="{StaticResource MediumLabel}"/>
         
-    </ContentPage.Content>
+        <Entry Text="{Binding EmailAddress}"
+               Placeholder="Enter email address"
+               Keyboard="Email"
+               Style="{StaticResource MediumLabel}"/>
+        
+        <HorizontalStackLayout Padding="5">
+            <Button Text="Save"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource ButtonOutline}"/>
+            <Button Text="Cancel"
+                    Command="{Binding CancelCommand}"
+                    Style="{StaticResource ButtonOutline}"/>
+        </HorizontalStackLayout>
+            
+    </VerticalStackLayout>
+
 </ContentPage>

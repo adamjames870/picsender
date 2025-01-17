@@ -5,10 +5,12 @@ namespace PicSender.Services;
 public class Emails : IDisposable
 {
     private IEmail? _emailService;
+    private PicDatabase _database;
     
-    public Emails(IEmail emailService)
+    public Emails(IEmail emailService, PicDatabase database)
     {
         _emailService = emailService;
+        _database = database;
     }
 
     public void Dispose()
@@ -18,10 +20,13 @@ public class Emails : IDisposable
 
     public async Task SendEmailWithAttachaments(PictureGroup pictureGroup, List<SinglePicture> pictures)
     {
-        var subject = $"Pictures from {pictureGroup.Title}";
+        var subject = $"{pictureGroup.Title}";
         const string body = "Enclosed images.";
-        var recipients = new[] { "adam@adamjames.me.uk", "adam.james870@yahoo.co.uk" };
+        var options = await _database.GetAppOptionsAsync();
+        // var recipients = new[] { "adam@adamjames.me.uk", "adam.james870@yahoo.co.uk" };
+        var recipients = new[] { options.EmailAddress };
 
+        
         var message = new EmailMessage
         {
             Subject = subject,
