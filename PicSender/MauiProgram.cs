@@ -25,9 +25,11 @@ public static class MauiProgram
         
         builder.Services.AddSingleton<MainPageViewModel>();
         builder.Services.AddTransient<PictureGroupDetailViewModel>();
+        builder.Services.AddTransient<OptionsViewModel>();
         
         builder.Services.AddSingleton<MainPage>();
         builder.Services.AddTransient<PictureGroupDetailView>();
+        builder.Services.AddTransient<OptionsView>();
 
 #if DEBUG
         builder.Logging.AddDebug();

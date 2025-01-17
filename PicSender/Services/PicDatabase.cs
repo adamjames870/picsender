@@ -15,6 +15,7 @@ public class PicDatabase
         _db = new SQLiteAsyncConnection(databasePath);
         await _db.CreateTableAsync<SinglePicture>();
         await _db.CreateTableAsync<PictureGroup>();
+        await _db.CreateTableAsync<AppOptions>();
 
     }
     
@@ -84,4 +85,11 @@ public class PicDatabase
         var updatedRecords = await _db.UpdateAsync(picture);
         return updatedRecords;
     }
+
+    public async Task<AppOptions> GetAppOptionsAsync()
+    {
+        await Init();
+        return await _db.Table<AppOptions>().FirstOrDefaultAsync();
+    }
+
 }

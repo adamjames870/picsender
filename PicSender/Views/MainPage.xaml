@@ -82,7 +82,8 @@
                 Grid.Column="1"
                 Margin="5"
                 Style="{StaticResource ButtonOutline}"
-                Text="Not used" />
+                Text="Email Address"
+                Command="{Binding ChangeEmailCommand}"/>
         
     </Grid>
 

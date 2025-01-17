@@ -134,5 +134,21 @@ public partial class MainPageViewModel : BaseViewModel
             await Shell.Current.DisplayAlert($"Error in {nameof(RenamePictureGroupAsync)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
         }
     }
+
+    [RelayCommand]
+    async Task ChangeEmail()
+    {
+        try
+        {
+            var options = await database.GetAppOptionsAsync();
+            await Shell.Current.GoToAsync($"{nameof(OptionsView)}", true,
+                new Dictionary<string, object> { { nameof(AppOptions), options } });
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error: {ex.Message}");
+            await Shell.Current.DisplayAlert($"Error in {nameof(ChangeEmail)}", $"Exception: {ex.Message}, {ex.Source}", "OK");
+        }
+    }
     
 }
