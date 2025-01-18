@@ -41,6 +41,7 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
             var picture = await mediaPicker.PickPhotoAsync();
             if (picture is null) return;
             var name = await GetImageName();
+            if (name is null) return;
             var singlePicture = new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id };
             Pictures.Add(singlePicture.ToPictureItemModel());
             await db.AddPictureAsync(singlePicture);
@@ -76,10 +77,11 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
             if (picture is null) return;
             var name = await GetImageName();
             if (name is null) return;
-            var localFilePath = Path.Combine(FileSystem.CacheDirectory, name + Path.GetExtension(picture.FileName));
+            var localFilePath = Path.Combine(FileSystem.AppDataDirectory, name + Path.GetExtension(picture.FileName));
             await using var sourceStream = await picture.OpenReadAsync();
             await using var localFileStream = File.OpenWrite(localFilePath);
             await sourceStream.CopyToAsync(localFileStream);
+            File.Delete(picture.FullPath);
             var singlePicture = new SinglePicture { Name = name, FullPath = localFilePath, PictureGroupId = PictureGroup.Id };
             Pictures.Add(singlePicture.ToPictureItemModel());
             await db.AddPictureAsync(singlePicture);
@@ -111,6 +113,10 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
             if (newThumbnail != "XXX")
             {
                 await UpdatePictureGroupAsync(newThumbnail);
+            }
+            else
+            {
+                await UpdatePictureGroupAsync();
             }
         }
         catch (Exception ex)
