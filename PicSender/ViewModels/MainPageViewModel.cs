@@ -78,6 +78,15 @@ public partial class MainPageViewModel : BaseViewModel
     [RelayCommand]
     async Task SendEmailAsync(PictureGroupItemModel pictureGroupItemModel)
     {
+
+        var options = await database.GetAppOptionsAsync();
+        if (string.IsNullOrWhiteSpace(options.EmailAddress))
+        {
+            await Shell.Current.DisplayAlert("Email Address", "Set your email address", "OK");
+            await ChangeEmail();
+            return;
+        }
+        
         if (_email.IsComposeSupported)
         {
             try
@@ -91,10 +100,6 @@ public partial class MainPageViewModel : BaseViewModel
             {
                 Debug.WriteLine($"Error: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
-            }
-            finally
-            {
-
             }
         }
     }

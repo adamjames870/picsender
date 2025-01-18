@@ -40,7 +40,7 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
         {
             var picture = await mediaPicker.PickPhotoAsync();
             if (picture is null) return;
-            var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
+            var name = await GetImageName();
             var singlePicture = new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id };
             Pictures.Add(singlePicture.ToPictureItemModel());
             await db.AddPictureAsync(singlePicture);
@@ -74,8 +74,13 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
             }
             var picture = await mediaPicker.CapturePhotoAsync();
             if (picture is null) return;
-            var name = await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
-            var singlePicture = new SinglePicture { Name = name, FullPath = picture.FullPath, PictureGroupId = PictureGroup.Id };
+            var name = await GetImageName();
+            if (name is null) return;
+            var localFilePath = Path.Combine(FileSystem.CacheDirectory, name + Path.GetExtension(picture.FileName));
+            await using var sourceStream = await picture.OpenReadAsync();
+            await using var localFileStream = File.OpenWrite(localFilePath);
+            await sourceStream.CopyToAsync(localFileStream);
+            var singlePicture = new SinglePicture { Name = name, FullPath = localFilePath, PictureGroupId = PictureGroup.Id };
             Pictures.Add(singlePicture.ToPictureItemModel());
             await db.AddPictureAsync(singlePicture);
         }
@@ -84,6 +89,11 @@ public partial class PictureGroupDetailViewModel(IMediaPicker mediaPicker, PicDa
             Debug.WriteLine($"Error: {ex.Message}");
             await Shell.Current.DisplayAlert("Error", $"Exception: {ex.Message}", "OK");
         }
+    }
+
+    private async Task<string?> GetImageName()
+    {
+        return await App.Current.MainPage.DisplayPromptAsync("Name", "Enter a name for the picture");
     }
     
     [RelayCommand]
